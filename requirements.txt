@@ -1,0 +1,7 @@
+requests
+ipykernel
+hmmlearn
+scikit-learn
+numpy
+seaborn
+matplotlib
