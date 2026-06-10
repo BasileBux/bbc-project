@@ -26,6 +26,7 @@
               scikit-learn
               requests
               matplotlib
+              hmmlearn
             ]
           ))
         ];
