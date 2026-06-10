@@ -237,13 +237,13 @@ La comparaison se fait à deux niveaux :
 
 Voici une matrice la matrice de confusion de notre modèle:
 
-#image("/assets/image.png")
+#image("./assets/image.png")
 
 L'erreur est donc relativement symétrique : le modèle a un léger biais vers le rappel (il détecte davantage de membranaires au prix de quelques faux positifs).
 
 == Comparaison avec DeepTMHMM
 
-#image("/assets/image-1.png")
+#image("./assets/image-1.png")
 
 *DeepTMHMM vs jeu de test* -- DeepTMHMM est un prédicteur extrêmement conservateur. Avec une précision de 1,00, il ne produit *aucun faux positif* : aucune protéine soluble n'est classée à tort comme membranaire. En contrepartie, son rappel (~0,71) révèle environ *292 faux négatifs*. Ces erreurs correspondent vraisemblablement à des protéines membranaires atypiques -- par exemple celles comportant un seul segment transmembranaire très court, des peptides signaux non clivés, ou des ancrages lipidiques -- que le modèle transformer de DeepTMHMM, entraîné principalement sur des hélices alpha transmembranaires classiques, peine à reconnaître.
 
