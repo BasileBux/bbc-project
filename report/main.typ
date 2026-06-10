@@ -98,11 +98,7 @@ Les *réseaux de neurones cachés (HNN)* représentent une approche hybride comb
     columns: (auto, auto, auto, auto, auto),
     inset: 5pt,
     align: left,
-    [*Méthode*],
-    [*Année*],
-    [*Approche*],
-    [*Caractéristique clé*],
-    [*Précision*],
+    [*Méthode*], [*Année*], [*Approche*], [*Caractéristique clé*], [*Précision*],
 
     [Kyte-Doolittle],
     [1982],
@@ -239,20 +235,15 @@ La comparaison se fait à deux niveaux :
 
 == Performance du classifieur HMM
 
-Sur le jeu de test (2 000 séquences humaines), le HMM binaire atteint les performances suivantes :
-- *Accuracy* : 0,78
-- *Précision* : 0,76
-- *Rappel* : 0,81
-- *F1-score* : 0,79
+Voici une matrice la matrice de confusion de notre modèle:
 
-La matrice de confusion montre :
-- *751 vrais négatifs* et *808 vrais positifs* ;
-- *249 faux positifs* (non-membranaires classés membranaires) ;
-- *192 faux négatifs* (membranaires classés non-membranaires).
+#image("/assets/image.png")
 
 L'erreur est donc relativement symétrique : le modèle a un léger biais vers le rappel (il détecte davantage de membranaires au prix de quelques faux positifs).
 
 == Comparaison avec DeepTMHMM
+
+#image("/assets/image-1.png")
 
 *DeepTMHMM vs jeu de test* -- DeepTMHMM est un prédicteur extrêmement conservateur. Avec une précision de 1,00, il ne produit *aucun faux positif* : aucune protéine soluble n'est classée à tort comme membranaire. En contrepartie, son rappel (~0,71) révèle environ *292 faux négatifs*. Ces erreurs correspondent vraisemblablement à des protéines membranaires atypiques -- par exemple celles comportant un seul segment transmembranaire très court, des peptides signaux non clivés, ou des ancrages lipidiques -- que le modèle transformer de DeepTMHMM, entraîné principalement sur des hélices alpha transmembranaires classiques, peine à reconnaître.
 
@@ -260,7 +251,7 @@ L'erreur est donc relativement symétrique : le modèle a un léger biais vers l
 
 == Interprétation biologique des prédictions
 
-Les résultats confirment que les séquences membranaires et non-membranaires possèdent des signatures globales différentes perceptibles par un modèle probabiliste simple. Cependant, la limite de 78 % d'accuracy montre que la composition en acides aminés seule ne suffit pas à discriminer parfaitement les deux classes. La présence de régions hydrophobes dans certaines protéines solubles (domaines de liaison aux lipides, peptides signaux) et la variabilité des architectures membranaires (hélices alpha vs tonneaux bêta) rendent la tâche difficile sans modélisation topologique explicite.
+Les résultats confirment que les séquences membranaires et non-membranaires possèdent des signatures globales différentes perceptibles par un modèle probabiliste simple. Cependant, la limite de 78 % d'accuracy montre que la composition en acides aminés seule ne suffit pas à discriminer parfaitement les deux classes. La présence de régions hydrophobes dans certaines protéines solubles (domaines de liaison aux lipides, peptides signaux) et la variabilité des architectures membranaires (hélices alpha vs tonneaux bêta) rendent la tâche difficile sans modélisation topologique explicite. Une des autres hypothèse est des données fausses ou incomplètes.
 
 == Discussion : avantages, limites et perspectives
 
@@ -280,6 +271,8 @@ Les résultats confirment que les séquences membranaires et non-membranaires po
 
 4. *Données d'entraînement et bruit de classe* : La classe négative (cytoplasme + noyau) est un proxy de protéines solubles, mais elle exclut d'autres localisations (mitochondries, sécrétées). De plus, certaines protéines périphériques ou ancrées aux lipides peuvent partager des motifs avec les protéines transmembranaires, créant un bruit inévitable pour un classifieur binaire aussi simple.
 
+5. *Limite des données tagées vis SwissProt* : Étant donné la precision de 100% et un recall de 71% de _DeepTHMHMM_, sensé être proche de 99%, il semble que dans les données de Swiss-Prot tagées non-membranaire, il y ait une quantité non-négligable de faux-négatifs.
+
 === Perspectives d'amélioration
 
 Pour une prédiction fiable, plusieurs directions pourraient être envisagées :
@@ -287,6 +280,7 @@ Pour une prédiction fiable, plusieurs directions pourraient être envisagées :
 - *Intégration de profils évolutifs* : Utiliser des alignements multiples de séquences (MSA) pour enrichir l'information d'entrée, à l'instar de PolyPhobius.
 - *Features physico-chimiques* : Incorporer des descripteurs tels que l'hydrophobicité Kyte-Doolittle, la charge nette ou la taille des résidus pour compléter l'information séquentielle brute.
 - *Approche combinée* : Un vote ou un stacking exploitant la précision de DeepTMHMM et le rappel du HMM pourrait offrir un meilleur compromis F1 que chaque modèle pris isolément.
+- *Meilleures gestion des Données* : Différent fold avec random subsample et analyse précise par tags.
 
 *Conclusion* : Le HMM binaire prouve que les séquences membranaires et non-membranaires possèdent des signatures globales différentes, mais il est intrinsèquement limité par sa simplicité. Pour une prédiction fiable à l'échelle du protéome humain, il faudrait adopter une architecture hiérarchique ou un modèle de deep learning intégrant la topologie et les profils évolutifs, comme le fait DeepTMHMM. Ce projet démontre néanmoins la pertinence des approches probabilistes comme base interprétable et rapidement déployable pour le criblage initial de candidats protéiques.
 
